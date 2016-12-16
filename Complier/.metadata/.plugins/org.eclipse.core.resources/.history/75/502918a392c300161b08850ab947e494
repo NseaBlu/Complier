@@ -1,0 +1,21 @@
+
+public class NotEndCode extends Sign {
+	
+	
+	private String NotEndCode;
+
+	public NotEndCode(String s)
+	{
+		super(1);
+		this.NotEndCode=s;
+		
+	}
+
+	public String getNotEndCode() {
+		return NotEndCode;
+	}
+
+	public void setNotEndCode(String notEndCode) {
+		NotEndCode = notEndCode;
+	}
+}

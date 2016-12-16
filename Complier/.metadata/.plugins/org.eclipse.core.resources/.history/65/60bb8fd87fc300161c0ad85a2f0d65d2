@@ -1,0 +1,21 @@
+
+public class Main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		   
+				GrammerAnaylise mp=new GrammerAnaylise();
+				try {
+				//	GrammerAnaylise.getChar();
+					
+					
+				  System.out.println(GrammerAnaylise.getEndSignLength());
+				  System.out.println(GrammerAnaylise.getNotEndCodeLenght());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	}
+
+}

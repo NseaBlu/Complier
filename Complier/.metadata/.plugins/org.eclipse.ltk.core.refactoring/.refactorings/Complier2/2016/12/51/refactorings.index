@@ -11,3 +11,6 @@
 1481815408894	Encapsulate field 'NotEndCodeArray'
 1481815478516	Encapsulate field 'EndSignLength'
 1481815482985	Encapsulate field 'NotEndCodeLenght'
+1481886016129	Rename type 'MainProcess'
+1481891419739	Encapsulate field 'type'
+1481894339421	Delete element

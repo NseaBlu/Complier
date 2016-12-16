@@ -1,12 +1,17 @@
 
-public class NotEndCode {
-
+public class NotEndCode extends Sign {
+	
+	
 	private String NotEndCode;
 
 	public NotEndCode(String s)
 	{
+	
 		this.NotEndCode=s;
+		this.setType(1);
+		
 	}
+
 	public String getNotEndCode() {
 		return NotEndCode;
 	}
@@ -14,5 +19,4 @@ public class NotEndCode {
 	public void setNotEndCode(String notEndCode) {
 		NotEndCode = notEndCode;
 	}
-	
 }
