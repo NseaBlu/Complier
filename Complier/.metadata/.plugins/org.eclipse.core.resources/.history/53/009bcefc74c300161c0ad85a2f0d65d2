@@ -113,9 +113,9 @@ public class MainProcess {
 			}
 			
 			if(endIndex==sLength)
-				subString=s.substring(startIndex);
+				subString=s.substring(startIndex-1);
 			else
-			  subString=s.substring(startIndex, endIndex+1);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  subString=s.substring(startIndex, endIndex+1);
 			NotEndCode Code=new NotEndCode(subString);
 			
 			if(!isInNotEndCodeArray(Code))
@@ -127,10 +127,10 @@ public class MainProcess {
 			}
 			i=endIndex;
 			break;
+			
 			case '¡ú':
 			break;
 			case ' ':
-				//System.out.println("¿Õ¸ñÌø¹ý");
 			break;
 			default:
 				startIndex=i;
@@ -142,7 +142,7 @@ public class MainProcess {
 				}
 				
 				if(endIndex==sLength)
-					subString=s.substring(startIndex);
+					subString=s.substring(startIndex-1);
 				else
 				    subString=s.substring(startIndex, endIndex);
 				//subString=s.substring(startIndex, endIndex);
@@ -172,7 +172,7 @@ public class MainProcess {
 		BufferedReader bf=new BufferedReader(new FileReader(f));
 		System.out.print("");
 		int line=0;
-		   
+		
 		try {
 			while((string=bf.readLine())!=null)
 			{

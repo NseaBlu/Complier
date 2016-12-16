@@ -127,10 +127,11 @@ public class MainProcess {
 			}
 			i=endIndex;
 			break;
+			
 			case '→':
 			break;
 			case ' ':
-				//System.out.println("空格跳过");
+				System.out.println("空格跳过");
 			break;
 			default:
 				startIndex=i;

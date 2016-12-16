@@ -127,6 +127,7 @@ public class MainProcess {
 			}
 			i=endIndex;
 			break;
+			
 			case '¡ú':
 			break;
 			case ' ':
