@@ -1,0 +1,16 @@
+
+public class notEndCode {
+
+	private String NotEndCode;
+
+	
+	public not
+	public String getNotEndCode() {
+		return NotEndCode;
+	}
+
+	public void setNotEndCode(String notEndCode) {
+		NotEndCode = notEndCode;
+	}
+	
+}

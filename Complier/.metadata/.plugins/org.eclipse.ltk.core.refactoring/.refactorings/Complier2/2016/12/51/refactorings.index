@@ -1,0 +1,13 @@
+1481804200624	Delete element
+1481804207803	Delete element
+1481804216850	Delete element
+1481809400974	Encapsulate field 'NotEndCode'
+1481809427530	Rename compilation unit 'notEndCode.java'
+1481809463905	Rename type 'endSign'
+1481809551546	Encapsulate field 'EndSign'
+1481815387887	Encapsulate field 'EndSign'
+1481815393239	Encapsulate field 'NotEndCode'
+1481815398453	Encapsulate field 'EndSignArray'
+1481815408894	Encapsulate field 'NotEndCodeArray'
+1481815478516	Encapsulate field 'EndSignLength'
+1481815482985	Encapsulate field 'NotEndCodeLenght'

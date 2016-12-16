@@ -1,0 +1,15 @@
+
+public class NotEndCode {
+
+	private String NotEndCode;
+
+	
+	public String getNotEndCode() {
+		return NotEndCode;
+	}
+
+	public void setNotEndCode(String notEndCode) {
+		NotEndCode = notEndCode;
+	}
+	
+}
