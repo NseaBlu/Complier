@@ -15,6 +15,9 @@ public class GrammerAnaylise {
 	private static  int EndSignLength;
 	private static  int NotEndCodeLength;
 	private static Production returnProduction;
+	public static int helpNum;
+	
+	
 	
 	public GrammerAnaylise()
 	{
@@ -49,7 +52,7 @@ public class GrammerAnaylise {
 				String s2=endcode.getEndSign();
 				if(s1.equals(s2))
 				{
-					endcode=endcodeTest;
+					helpNum=endcodeTest.EndSignNum;
 					return true;
 				}
 			}
@@ -77,7 +80,7 @@ public class GrammerAnaylise {
 				String s2=codeTest.getNotEndCode();
 				if(s1.equals(s2))
 				{
-					code=codeTest;
+					helpNum=codeTest.NotEndCodeNum;
 					return true;
 				}
 			}
@@ -136,6 +139,10 @@ public class GrammerAnaylise {
 				
 				NotEndCodeLength+=1;
 			  }
+			   else
+			   {
+				   Code.NotEndCodeNum=helpNum;
+			   }
 			   //将符号放进产生式
 			   if(i==0)
 				{
@@ -179,6 +186,10 @@ public class GrammerAnaylise {
 						
 						
 					}
+					else
+					   {
+						   endcode.EndSignNum=helpNum;
+					   }
 					//将符号放进产生式
 					returnProduction.setProductionBody(returnProduction.productionLength, endcode);
 					returnProduction.productionLength+=1;
@@ -200,6 +211,10 @@ public class GrammerAnaylise {
 						EndSignLength+=1;
 						
 					}
+					else
+					   {
+						   endcode.EndSignNum=helpNum;
+					   }
 					//将符号放进产生式
 					returnProduction.setProductionBody(returnProduction.productionLength, endcode);
 					returnProduction.productionLength+=1;
@@ -237,6 +252,10 @@ public class GrammerAnaylise {
 					EndSignLength+=1;
 					
 				}
+				else
+				 {
+					   endcode.EndSignNum=helpNum;
+				  }
 				//将符号放进产生式
 				returnProduction.setProductionBody(returnProduction.productionLength, endcode);
 				returnProduction.productionLength+=1;
