@@ -290,25 +290,10 @@ public class GrammerAnaylise {
 		      // System.out.println(ProductionNum);
 				allProduction[realProductionLength]=production;
 				
-				/*//输出产生式
-				System.out.println(allProduction[ProductionNum].ProductionNum+allProduction[ProductionNum].getHead().getNotEndCode());
-				
-				for(int j=0;j<allProduction[ProductionNum].productionLength;j++)
-				{
-					if(j!=(allProduction[ProductionNum].productionLength-1))
-					{
-						System.out.print(allProduction[ProductionNum].productionSign[j].getSignString()+allProduction[ProductionNum].productionSign[j].getSignNum()+' ');
-					}
-					else
-					{
-						System.out.println(allProduction[ProductionNum].productionSign[j].getSignString()+allProduction[ProductionNum].productionSign[j].getSignNum());
-					}
-				}
-				*/
 				realProductionLength+=1;
 			}
 			bf.close();
-			System.out.println(line);
+			System.out.println("产生式数量："+line);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
