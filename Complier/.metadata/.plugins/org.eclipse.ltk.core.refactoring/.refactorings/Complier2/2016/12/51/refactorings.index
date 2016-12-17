@@ -14,3 +14,8 @@
 1481886016129	Rename type 'MainProcess'
 1481891419739	Encapsulate field 'type'
 1481894339421	Delete element
+1481929805278	Encapsulate field 'head'
+1481929958359	Encapsulate field 'productionSign'
+1481930238799	Encapsulate field 'firstEndSign'
+1481932300887	Convert local variable 'mp' to field
+1481933926431	Convert local variable 'returnProduction' to field

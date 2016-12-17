@@ -14,9 +14,7 @@ public class GrammerAnaylise {
 	private static  NotEndCode []NotEndCodeArray;
 	private static  int EndSignLength;
 	private static  int NotEndCodeLength;
-	
-
-
+	private static Production returnProduction;
 	
 	public GrammerAnaylise()
 	{
@@ -51,6 +49,7 @@ public class GrammerAnaylise {
 				String s2=endcode.getEndSign();
 				if(s1.equals(s2))
 				{
+					endcode=endcodeTest;
 					return true;
 				}
 			}
@@ -78,6 +77,7 @@ public class GrammerAnaylise {
 				String s2=codeTest.getNotEndCode();
 				if(s1.equals(s2))
 				{
+					code=codeTest;
 					return true;
 				}
 			}
@@ -87,17 +87,19 @@ public class GrammerAnaylise {
 		
 	}
 	//分析产生式
-	public static void analyseCode(String s)
+	public static Production analyseCode(String s)
 	{
+		
+		returnProduction = null;
 		int sLength;
 		int i;
 		int startIndex;
 		int endIndex;
 	    String subString;
-	    char before;
+	   // char before;
 	    char next;
 		char character;
-		
+		 NotEndCode Code;
 		sLength=s.length();
 		for(i=0;i<sLength;i++)
 		{
@@ -106,7 +108,7 @@ public class GrammerAnaylise {
 			{
 			case '<':
 				if((i+1)<sLength)
-		{	    next=s.charAt(i+1);
+		 {	    next=s.charAt(i+1);
 				if(isLetter(next))
 		    {
 			    startIndex=i;
@@ -121,19 +123,32 @@ public class GrammerAnaylise {
 				subString=s.substring(startIndex);
 			   else
 			    subString=s.substring(startIndex, endIndex+1);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-			    NotEndCode Code=new NotEndCode(subString);
+			    Code=new NotEndCode(subString);
 			
 			   if(!isInNotEndCodeArray(Code))
 			  {
 				
+				Code.NotEndCodeNum=NotEndCodeLength;//编号
 				NotEndCodeArray[NotEndCodeLength]=Code;
 				//System.out.println("非终结符");
 				//System.out.println(subString);
 				
 				NotEndCodeLength+=1;
 			  }
+			   //将符号放进产生式
+			   if(i==0)
+				{
+					returnProduction.setHead(Code);//存放产生式头
+					returnProduction.productionLength=0;//给产生式体编号
+				}
+				
+				else
+					{
+					returnProduction.setProductionBody(returnProduction.productionLength, Code);
+					returnProduction.productionLength+=1;
+					}
 			    i=endIndex;
-		  }
+		    }
 				else
 			{
 					startIndex=i;
@@ -154,29 +169,40 @@ public class GrammerAnaylise {
 					if(!isInEndSignArray(endcode))
 					{
 						
+						endcode.EndSignNum=EndSignLength;//编号
 						EndSignArray[EndSignLength]=endcode;
 						//System.out.println("终结符");
 						//System.out.println(subString);
 						EndSignLength+=1;
+						
+						
 					}
+					//将符号放进产生式
+					returnProduction.setProductionBody(returnProduction.productionLength, endcode);
+					returnProduction.productionLength+=1;
 					i=endIndex;
 			}
 		}
-				else
-				{
+		else
+		{
 					subString=s.substring(i);
                     EndSign endcode=new EndSign(subString);
 					
 					if(!isInEndSignArray(endcode))
 					{
 						
+						endcode.EndSignNum=EndSignLength;//编号
 						EndSignArray[EndSignLength]=endcode;
 						//System.out.println("终结符");
 						//System.out.println(subString);
 						EndSignLength+=1;
+						
 					}
+					//将符号放进产生式
+					returnProduction.setProductionBody(returnProduction.productionLength, endcode);
+					returnProduction.productionLength+=1;
 					
-				}
+		 }
 			 break; 
 			case '→':
 			break;
@@ -202,20 +228,26 @@ public class GrammerAnaylise {
 				if(!isInEndSignArray(endcode))
 				{
 					
+					endcode.EndSignNum=EndSignLength;//编号
 					EndSignArray[EndSignLength]=endcode;
 					//System.out.println("终结符");
 					//System.out.println(subString);
 					EndSignLength+=1;
+					
 				}
+				//将符号放进产生式
+				returnProduction.setProductionBody(returnProduction.productionLength, endcode);
+				returnProduction.productionLength+=1;
 				i=endIndex;
 				break;
 			
 			}
 		}
+		return returnProduction;
 		
 	}
 	//读取产生式文件
-	public static void getChar() throws Exception{	
+	public static void getChar(Production []allProduction) throws Exception{	
 		
 		File f= new File("D:\\","语法分析.txt");
 		if(!f.exists()){
@@ -224,14 +256,34 @@ public class GrammerAnaylise {
 		BufferedReader bf=new BufferedReader(new FileReader(f));
 		System.out.print("");
 		int line=0;
-		   
+		int ProductionNum=0;  
+		Production production;
 		try {
+			
 			while((string=bf.readLine())!=null)
 			{
 				line+=1;
 				//System.out.println(string);
-				analyseCode(string);
+				production=analyseCode(string);
+				production.ProductionNum=ProductionNum;
+				allProduction[ProductionNum]=production;
 				
+				//输出产生式
+				System.out.println(allProduction[ProductionNum].ProductionNum+allProduction[ProductionNum].getHead().getNotEndCode());
+				
+				for(int j=0;j<allProduction[ProductionNum].productionLength;j++)
+				{
+					if(j!=(allProduction[ProductionNum].productionLength-1))
+					{
+						System.out.print(allProduction[ProductionNum].productionSign[j].getSignString()+allProduction[ProductionNum].productionSign[j].getSignNum()+' ');
+					}
+					else
+					{
+						System.out.println(allProduction[ProductionNum].productionSign[j].getSignString()+allProduction[ProductionNum].productionSign[j].getSignNum());
+					}
+				}
+				
+				ProductionNum+=1;
 			}
 			bf.close();
 			System.out.println(line);

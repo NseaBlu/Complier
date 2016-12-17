@@ -3,7 +3,8 @@ public class Sign {
 
 	
 	public int type;
-
+    public int SignNum;
+    public String signString;
 	public Sign()
 	{
 		
@@ -14,5 +15,14 @@ public class Sign {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+	public  String getSignString()
+	{
+		return signString;
+	}
+	
+	public int getSignNum()
+	{
+		return SignNum;
 	}
 }

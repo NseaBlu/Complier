@@ -1,9 +1,9 @@
 
-public class EndSign {
+public class EndSign extends Sign {
 
 	
 	private String EndSign;
-
+    public int EndSignNum;
 	public EndSign(String s)
 	{
 		this.EndSign=s;
@@ -17,4 +17,14 @@ public class EndSign {
 		EndSign = endSign;
 	}
 	
+	
+	public  String getSignString()
+	{
+		return EndSign;
+	}
+	
+	public int getSignNum()
+	{
+		return EndSignNum;
+	}
 }
