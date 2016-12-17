@@ -15,7 +15,8 @@ public class Main {
 			     mp = new GrammerAnaylise();
 				try {
 				
-				   GrammerAnaylise.getChar(allProduction);
+				  allProduction=new Production[50];
+				  GrammerAnaylise.getChar(allProduction);
 				  System.out.println(GrammerAnaylise.getEndSignLength());
 				  System.out.println(GrammerAnaylise.getNotEndCodeLenght());
 				  

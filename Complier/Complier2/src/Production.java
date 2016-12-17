@@ -17,6 +17,8 @@ public class Production {
     }
 	public Production() {
 		// TODO Auto-generated constructor stub
+		
+		productionSign=new Sign[20];
 	}
 	
 	public void setProductionBody(int num,Sign sign)

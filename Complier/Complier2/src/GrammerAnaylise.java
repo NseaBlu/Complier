@@ -90,7 +90,7 @@ public class GrammerAnaylise {
 	public static Production analyseCode(String s)
 	{
 		
-		returnProduction = null;
+		Production returnProduction = new Production();
 		int sLength;
 		int i;
 		int startIndex;
@@ -123,7 +123,8 @@ public class GrammerAnaylise {
 				subString=s.substring(startIndex);
 			   else
 			    subString=s.substring(startIndex, endIndex+1);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-			    Code=new NotEndCode(subString);
+			    
+			   Code=new NotEndCode(subString);
 			
 			   if(!isInNotEndCodeArray(Code))
 			  {
@@ -138,6 +139,7 @@ public class GrammerAnaylise {
 			   //将符号放进产生式
 			   if(i==0)
 				{
+				   
 					returnProduction.setHead(Code);//存放产生式头
 					returnProduction.productionLength=0;//给产生式体编号
 				}
@@ -257,7 +259,7 @@ public class GrammerAnaylise {
 		System.out.print("");
 		int line=0;
 		int ProductionNum=0;  
-		Production production;
+		Production production=new Production();
 		try {
 			
 			while((string=bf.readLine())!=null)
@@ -266,6 +268,7 @@ public class GrammerAnaylise {
 				//System.out.println(string);
 				production=analyseCode(string);
 				production.ProductionNum=ProductionNum;
+		       System.out.println(ProductionNum);
 				allProduction[ProductionNum]=production;
 				
 				//输出产生式
