@@ -6,6 +6,10 @@ public class NotEndCode extends Sign {
     public int NotEndCodeNum;
     public boolean vain;
     public FirstSet mFirstset;
+    public int canGenProductionNum;
+    public int []canGenProductionArrary;
+    
+    
     
 	public NotEndCode(String s)
 	{
@@ -13,6 +17,8 @@ public class NotEndCode extends Sign {
 		this.NotEndCode=s;
 		 this.setType(1);
 		 mFirstset=new FirstSet();
+		 canGenProductionNum=0;
+		 canGenProductionArrary=new int[50];
 		
 	}
 

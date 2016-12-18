@@ -268,7 +268,7 @@ public class GrammerAnaylise {
 		
 	}
 	//读取产生式文件
-	public static void getChar(Production []allProduction, int realProductionLength) throws Exception{	
+	public static int getChar(Production []allProduction) throws Exception{	
 		
 		File f= new File("D:\\","语法分析.txt");
 		if(!f.exists()){
@@ -277,7 +277,7 @@ public class GrammerAnaylise {
 		BufferedReader bf=new BufferedReader(new FileReader(f));
 		System.out.print("");
 		int line=0;
-		realProductionLength=0;  
+		int realProductionLength=0;  
 		Production production=new Production();
 		try {
 			
@@ -310,6 +310,7 @@ public class GrammerAnaylise {
 				}
 			}
 		}
+		return line;
 		
 		
 	}
