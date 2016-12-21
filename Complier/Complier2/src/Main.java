@@ -18,7 +18,7 @@ public class Main {
 	private static Stack testItemSet;
 	private static Stack testSetVirtualPro;
 	public static AnayliseTable mAnayliseTable;
-	
+	public static boolean endornot;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -28,7 +28,7 @@ public class Main {
 			     allItemSet=new Stack<ItemSet>();
 			     allItemSetnotPop=new Stack<ItemSet>();
 			     mAnayliseTable=new AnayliseTable();
-			    
+			     endornot=false;
 			    
 			 	    init();//初始化
 			 	    
@@ -75,22 +75,39 @@ public class Main {
 				   allItemSetNum+=1;
 				   System.out.println(":::"+allItemSetNum);
 				   ItemSet middleItemSet=new ItemSet();
+				   ItemSet keepmiddleItemSet=new ItemSet();
 				   ItemSet middleItemSet22=new ItemSet();
+				   int time=0;
+				 
 				   while(!allItemSet.isEmpty())
 				   {
-					   
-					   middleItemSet=allItemSet.pop();
-					   for(int d1=0;d1< notEndCodeLength;d1++)
+					   if(time==5)break;
+					   keepmiddleItemSet=allItemSet.pop();
+					   for(int d1=0;d1< notEndCodeLength-1;d1++)
 					   {
+						   middleItemSet=keepmiddleItemSet;
+						   System.out.println(":::"+NotEndCodeArray[d1].getSignString());
 						   middleItemSet22=Goto(middleItemSet,d1);
+						   middleItemSet22.id=allItemSetNum;
 						   allItemSetnotPop.push(middleItemSet22);
+						   allItemSet.push(middleItemSet22);
 						   allItemSetNum+=1;
 						   System.out.println(":::"+allItemSetNum);
+						
 						   for(int i=0;i<middleItemSet22.setvirtualProNum;i++)
 					 	   {
 					 		   System.out.println("::"+middleItemSet22.mSetVirtualPro.get(i).productionNum);
 					 	   }
 					   }
+					   
+					   for(int i=0;i<6;i++)
+					   {
+						   
+						   for(int j=0;j<6;j++)
+						   System.out.print(mAnayliseTable.actiontable[i][j].actiontype+"."+mAnayliseTable.actiontable[i][j].tostatus+" ");
+						   System.out.println(" ");
+					   }
+					   time+=1;
 				   }
 			 	 
 			 	    
@@ -255,7 +272,7 @@ public class Main {
 	public static ItemSet Goto(ItemSet I,int signNum)
 	{
 		
-		
+		int id=I.id;
 		ItemSet returnItemSet=new ItemSet();
 		SetVirtualPro stacksvP;
 		int pp;
@@ -263,7 +280,9 @@ public class Main {
 		int productionNum;
         for(int i=0;i<I.setvirtualProNum;i++)
         {
-        	 System.out.println("3");
+        	
+        	
+        	System.out.println("3");
         	stacksvP=I.mSetVirtualPro.get(i);
         	pp=stacksvP.pointer;
         	productionNum=stacksvP.productionNum;
@@ -273,10 +292,29 @@ public class Main {
         		if(allProduction[productionNum].productionSign[pp].getSignNum()==signNum&&allProduction[productionNum].productionSign[pp].type==1)
         	
         	  {
-        			 System.out.println("YES");
-        		stacksvP.pointer+=1;
-        		returnItemSet.addsetvirtualPro(stacksvP);
+        			 
+        			System.out.println("YES");
+        		    stacksvP.pointer+=1;
+        		    
+        		    returnItemSet.addsetvirtualPro(stacksvP);
         	  }
+        	}
+        	else
+        	{
+        		actiongoto ag;
+        		System.out.println("规约"+id+signNum);
+    			if(productionNum==realProductionLength)
+    			    ag=new actiongoto(4,productionNum);
+    			else ag=new actiongoto(2,productionNum);
+    			int guiyueafter;
+        		for(int d3=0;d3<stacksvP.firstSetNum;d3++)
+        		{
+        			
+        			guiyueafter=stacksvP.firstSet[d3];
+        			 mAnayliseTable.actiontable[id][guiyueafter]=ag;
+        			 System.out.println("规约+++"+ mAnayliseTable.actiontable[id][guiyueafter].actiontype+ mAnayliseTable.actiontable[id][guiyueafter].tostatus);
+        			
+        		}
         	}
         	
         }
