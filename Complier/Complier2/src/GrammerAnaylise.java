@@ -270,7 +270,7 @@ public class GrammerAnaylise {
 	//读取产生式文件
 	public static int getChar(Production []allProduction) throws Exception{	
 		
-		File f= new File("D:\\","语法分析.txt");
+		File f= new File("D:\\","1.txt");
 		if(!f.exists()){
 			System.out.println("文件不存在，请输入正确的文件路径");
 		}

@@ -11,6 +11,13 @@ public class Main {
 	public static int []vainNum;
 	public static int endSignLength;
 	public static int notEndCodeLength;
+	public static Stack<ItemSet> allItemSet;
+	public static Stack<ItemSet> allItemSetnotPop;
+	public static SetVirtualPro addgrammer;
+	public static int allItemSetNum;
+	private static Stack testItemSet;
+	private static Stack testSetVirtualPro;
+	public static AnayliseTable mAnayliseTable;
 	
 	
 	public static void main(String[] args) {
@@ -18,11 +25,14 @@ public class Main {
 
 		         vainNum=new int[20];
 			     mp = new GrammerAnaylise();
+			     allItemSet=new Stack<ItemSet>();
+			     allItemSetnotPop=new Stack<ItemSet>();
+			     mAnayliseTable=new AnayliseTable();
 			    
-			 	
+			    
 			 	    init();//初始化
 			 	    
-				    printfEndSign();//输出终结符
+				  printfEndSign();//输出终结符
 				    printfNotEndCode();//输出非终结符
 				    printfAllProduction();//输出所有产生式
 				    printfNotEndCodeFirstSet();//输出非终结符的first集
@@ -47,11 +57,236 @@ public class Main {
 							
 		
 				    }	
-			
-				
-				
+		
+			 	   allItemSetNum=0;
+			 	   addgrammer=new SetVirtualPro(realProductionLength-1,0);
+			 	   addgrammer.addfirstset(endSignLength-1);
+				   ItemSet firstItemSet=new ItemSet(allItemSetNum);
+				   firstItemSet.addsetvirtualPro(addgrammer);
+				   firstItemSet=closure(firstItemSet);
+				   for(int i=0;i<firstItemSet.setvirtualProNum;i++)
+			 	   {
+			 		   System.out.println(firstItemSet.mSetVirtualPro.get(i).productionNum);
+			 	   }
+				   // firstItemSet=closure(firstItemSet);
+				    
+				   allItemSet.push(firstItemSet);
+				   allItemSetnotPop.push(firstItemSet);
+				   allItemSetNum+=1;
+				   System.out.println(":::"+allItemSetNum);
+				   ItemSet middleItemSet=new ItemSet();
+				   ItemSet middleItemSet22=new ItemSet();
+				   while(!allItemSet.isEmpty())
+				   {
+					   
+					   middleItemSet=allItemSet.pop();
+					   for(int d1=0;d1< notEndCodeLength;d1++)
+					   {
+						   middleItemSet22=Goto(middleItemSet,d1);
+						   allItemSetnotPop.push(middleItemSet22);
+						   allItemSetNum+=1;
+						   System.out.println(":::"+allItemSetNum);
+						   for(int i=0;i<middleItemSet22.setvirtualProNum;i++)
+					 	   {
+					 		   System.out.println("::"+middleItemSet22.mSetVirtualPro.get(i).productionNum);
+					 	   }
+					   }
+				   }
+			 	 
+			 	    
+			 
 	
 	}
+	
+	
+	//闭包函数
+	public static ItemSet closure(ItemSet I)
+	{
+		
+		
+		
+		testSetVirtualPro = new Stack<SetVirtualPro>();
+		
+		
+		for(int i=0;i<I.mSetVirtualPro.size();i++)
+		{
+			testSetVirtualPro.push(I.mSetVirtualPro.get(i));
+		}
+		
+		
+		SetVirtualPro help;
+		SetVirtualPro help2 ;
+		SetVirtualPro help3;
+		int []totalFirstSet=new int[40];
+		int totalFirstNum=0;
+		int productionNum;
+		int mpointer;
+		int signNum;
+		int signtype;
+		int signtype2;
+		int i;
+		int helpProductionLength;
+		int endsignNum2;
+		int notendcodeNum2;
+		int notendcodeNum3;
+		int pp;
+		while(!testSetVirtualPro.isEmpty())
+		{
+		     System.out.println("1");
+			
+			help=(SetVirtualPro) testSetVirtualPro.pop();
+			mpointer=help.pointer;
+			productionNum=help.productionNum;
+			helpProductionLength=allProduction[productionNum].productionLength;
+			if(mpointer==allProduction[productionNum].productionLength);//到达产生式末尾
+			else
+			{
+				//  System.out.println("1");
+				signtype=allProduction[productionNum].productionSign[mpointer].type;
+				
+				if(signtype==0);//遇到终结符
+				else
+				{
+					
+				//	System.out.println("1");
+					help2=new SetVirtualPro();
+					//算出first集
+					
+					for(i=mpointer+1;i<=helpProductionLength;i++)
+				{
+						if(i==helpProductionLength)//到达产生式末尾
+					{
+						//	System.out.println("1");
+						for(int t=0;t<help.firstSetNum;t++)
+						{
+							help2.addfirstset(help.firstSet[t]);
+						}
+					}
+					else 
+					{
+						signtype2=allProduction[productionNum].productionSign[i].type;
+						
+						if(signtype2==0)
+						{
+							endsignNum2=allProduction[productionNum].productionSign[i].getSignNum();
+							help2.addfirstset(endsignNum2);
+						}
+						else
+						{
+							
+						    notendcodeNum2=allProduction[productionNum].productionSign[i].getSignNum();
+							for(int p=0;p<NotEndCodeArray[notendcodeNum2].mFirstset.firstSet.size();p++)	
+							{
+								EndSign endsign;
+								endsign=NotEndCodeArray[notendcodeNum2].mFirstset.firstSet.get(p);
+								help2.addfirstset(endsign.getSignNum());
+								
+							}
+							if(!iscanGenVain(notendcodeNum2))	
+								break;
+							
+						}
+					}
+				 }
+					//System.out.println("1");
+					notendcodeNum3=allProduction[productionNum].productionSign[mpointer].getSignNum();
+					
+				for(int	q=0;q< NotEndCodeArray[notendcodeNum3].canGenProductionNum;q++)
+				{
+				//	System.out.println("1");
+					int m=NotEndCodeArray[notendcodeNum3].canGenProductionArrary[q];
+					int n;
+					
+					help3=new SetVirtualPro(m,0,help2.firstSet,help2.firstSetNum);
+					for(n=0;n<I.mSetVirtualPro.size();n++)
+					{
+						pp=I.mSetVirtualPro.get(n).productionNum;
+						if(pp==m){
+							break;
+						}
+					}
+					if(n==I.mSetVirtualPro.size())
+					{
+						
+						   System.out.println("2");
+							
+						testSetVirtualPro.push(help3);
+						I.addsetvirtualPro(help3);
+					}
+					
+				}
+					
+					
+			   }
+				
+				
+				
+				
+				
+			}
+				
+			
+			
+			
+			
+			
+			
+		}
+	
+		SetVirtualPro cc=new SetVirtualPro();
+		  for(int i1=0;i1<I.setvirtualProNum;i1++)
+	 	   {
+	 		   System.out.println(I.mSetVirtualPro.get(i1).productionNum);
+	 		cc=  I.mSetVirtualPro.get(i1);
+	 		
+	 		  for(int j1=0;j1<cc.firstSetNum;j1++)
+	 		  {
+	 			  System.out.print(cc.firstSet[j1]+" ");
+	 		  }
+	 		  System.out.println(" ");
+	 	   }
+		
+		
+		
+		
+		return I;
+		
+	}
+	public static ItemSet Goto(ItemSet I,int signNum)
+	{
+		
+		
+		ItemSet returnItemSet=new ItemSet();
+		SetVirtualPro stacksvP;
+		int pp;
+		int signnum2;
+		int productionNum;
+        for(int i=0;i<I.setvirtualProNum;i++)
+        {
+        	 System.out.println("3");
+        	stacksvP=I.mSetVirtualPro.get(i);
+        	pp=stacksvP.pointer;
+        	productionNum=stacksvP.productionNum;
+        	 System.out.println("productionNum"+productionNum);
+        	if(pp!=allProduction[productionNum].productionLength)
+        	{
+        		if(allProduction[productionNum].productionSign[pp].getSignNum()==signNum&&allProduction[productionNum].productionSign[pp].type==1)
+        	
+        	  {
+        			 System.out.println("YES");
+        		stacksvP.pointer+=1;
+        		returnItemSet.addsetvirtualPro(stacksvP);
+        	  }
+        	}
+        	
+        }
+		
+		
+		return closure(returnItemSet);
+		
+	}
+	
+	
 	
 	
 	public static void init()
@@ -83,6 +318,21 @@ public class Main {
 		findGenVainNotEndSignNum();//找出能推出空的非终结符
     	findAllNotEndSignFirstSet();//找出所有非终结符的first集
     	signAllNotEndSign();
+    	EndSignArray[endSignLength]=new EndSign("$");//终结符加入一个结束符
+    	EndSignArray[endSignLength].EndSignNum=endSignLength;
+    	endSignLength+=1;
+    	NotEndCodeArray[notEndCodeLength]=new NotEndCode("<G>");
+    	NotEndCodeArray[notEndCodeLength].NotEndCodeNum=notEndCodeLength;
+    	notEndCodeLength+=1;
+    	
+    	Production addProduction=new Production();//增广文法
+    	addProduction.setHead(NotEndCodeArray[notEndCodeLength-1]);
+        addProduction.setProductionBody(0, NotEndCodeArray[0]);
+        addProduction.productionLength=1;
+        addProduction.ProductionNum=realProductionLength;
+        allProduction[realProductionLength]=addProduction;
+        realProductionLength+=1;
+        //System.out.println(allProduction[realProductionLength-1].ProductionNum+allProduction[realProductionLength-1].getHead().getNotEndCode());
 	}
 	
 	
