@@ -19,6 +19,10 @@ public class Main {
 	private static Stack testSetVirtualPro;
 	public static AnayliseTable mAnayliseTable;
 	public static boolean endornot;
+	public static int originstatus;
+	public static int nowstatus;
+	public static actiongoto ggttoo;
+	
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -75,23 +79,47 @@ public class Main {
 				   allItemSetNum+=1;
 				   System.out.println(":::"+allItemSetNum);
 				   ItemSet middleItemSet=new ItemSet();
-				   ItemSet keepmiddleItemSet=new ItemSet();
+				 
 				   ItemSet middleItemSet22=new ItemSet();
 				   int time=0;
 				 
 				   while(!allItemSet.isEmpty())
 				   {
 					   if(time==5)break;
+					   ItemSet keepmiddleItemSet=new ItemSet();
 					   keepmiddleItemSet=allItemSet.pop();
+					   
+					   originstatus=keepmiddleItemSet.id;
 					   for(int d1=0;d1< notEndCodeLength-1;d1++)
 					   {
-						   middleItemSet=keepmiddleItemSet;
+
+						   for(int i=0;i< keepmiddleItemSet.setvirtualProNum;i++)
+					 	   {
+					 		   System.out.println("keep"+ keepmiddleItemSet.mSetVirtualPro.get(i).productionNum+" "+keepmiddleItemSet.mSetVirtualPro.get(i).pointer);
+					 	   }
+						   middleItemSet=new ItemSet(keepmiddleItemSet.mSetVirtualPro,keepmiddleItemSet.id);
 						   System.out.println(":::"+NotEndCodeArray[d1].getSignString());
 						   middleItemSet22=Goto(middleItemSet,d1);
-						   middleItemSet22.id=allItemSetNum;
-						   allItemSetnotPop.push(middleItemSet22);
-						   allItemSet.push(middleItemSet22);
-						   allItemSetNum+=1;
+						   if(middleItemSet22.setvirtualProNum==0)
+						   {
+							   
+						   }
+						   else
+						   {
+							   middleItemSet22.id=allItemSetNum;
+							   if(middleItemSet22.shutornot)break;
+							   else
+							   {
+							
+							   nowstatus=middleItemSet22.id;
+							   allItemSetnotPop.push(middleItemSet22);
+							   ggttoo=new actiongoto(3,nowstatus);
+							   mAnayliseTable.gototable[originstatus][d1]=ggttoo;
+							   allItemSet.push(middleItemSet22);
+							   allItemSetNum+=1;
+							   }
+						   }
+						  
 						   System.out.println(":::"+allItemSetNum);
 						
 						   for(int i=0;i<middleItemSet22.setvirtualProNum;i++)
@@ -99,12 +127,18 @@ public class Main {
 					 		   System.out.println("::"+middleItemSet22.mSetVirtualPro.get(i).productionNum);
 					 	   }
 					   }
-					   
-					   for(int i=0;i<6;i++)
+					   System.out.println("状态   "+" c  "+" d  "+" $ "+"<S1>"+" <S>"+" <C>");
+					   for(int i=0;i<10;i++)
 					   {
 						   
-						   for(int j=0;j<6;j++)
+						   int j;
+						   System.out.print(i+" ");
+						   for(j=0;j<endSignLength;j++)
 						   System.out.print(mAnayliseTable.actiontable[i][j].actiontype+"."+mAnayliseTable.actiontable[i][j].tostatus+" ");
+						   for(j=endSignLength;j<(endSignLength+notEndCodeLength-1);j++)
+						   {
+							   System.out.print(mAnayliseTable.gototable[i][j-endSignLength].actiontype+"."+mAnayliseTable.gototable[i][j-endSignLength].tostatus+" ");
+						   }
 						   System.out.println(" ");
 					   }
 					   time+=1;
@@ -278,6 +312,8 @@ public class Main {
 		int pp;
 		int signnum2;
 		int productionNum;
+		int addnum=0;
+		int endtruenum=0;
         for(int i=0;i<I.setvirtualProNum;i++)
         {
         	
@@ -297,6 +333,7 @@ public class Main {
         		    stacksvP.pointer+=1;
         		    
         		    returnItemSet.addsetvirtualPro(stacksvP);
+        		    addnum+=1;
         	  }
         	}
         	else
@@ -311,16 +348,24 @@ public class Main {
         		{
         			
         			guiyueafter=stacksvP.firstSet[d3];
+        			mAnayliseTable.actiontable[id][guiyueafter]=new actiongoto();
         			 mAnayliseTable.actiontable[id][guiyueafter]=ag;
-        			 System.out.println("规约+++"+ mAnayliseTable.actiontable[id][guiyueafter].actiontype+ mAnayliseTable.actiontable[id][guiyueafter].tostatus);
+        			 System.out.println("规约+++"+guiyueafter+" "+ mAnayliseTable.actiontable[id][guiyueafter].actiontype+ mAnayliseTable.actiontable[id][guiyueafter].tostatus);
         			
         		}
+        		
+        		stacksvP.end=true;
+        		endtruenum+=1;
         	}
         	
         }
+		if(endtruenum==I.setvirtualProNum)
+		{
+			I.shutornot=true;
+			return I;
+		}
 		
-		
-		return closure(returnItemSet);
+		else return closure(returnItemSet);
 		
 	}
 	

@@ -9,6 +9,7 @@ public class SetVirtualPro {
 	public int pointer;
 	public int []firstSet;
 	public int firstSetNum;
+	public boolean end;
 	public SetVirtualPro(int productionNum,int pointer)
 	{
 		this.pointer=pointer;
@@ -16,6 +17,7 @@ public class SetVirtualPro {
 		
 		firstSet=new int[50];
 		firstSetNum=0;
+		end=false;
 		
 		
 		
@@ -28,7 +30,7 @@ public class SetVirtualPro {
 		this.firstSet=new int[50];
 		this.firstSet=firstSet;
 		this.firstSetNum=firstsetNum;
-		
+		end=false;
 		
 		
 	}
@@ -36,6 +38,7 @@ public class SetVirtualPro {
 	{
 		firstSet=new int[50];
 		firstSetNum=0;
+		end=false;
 	}
 	public void addfirstset(int endsignNum)
 	{

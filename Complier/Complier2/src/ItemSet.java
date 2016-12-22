@@ -22,6 +22,22 @@ public class ItemSet {
 		
 	    mSetVirtualPro=new Stack<SetVirtualPro>();
 	    setvirtualProNum=0;
+	    shutornot=false;
+	}
+	public ItemSet(Stack<SetVirtualPro>  mSetVirtualPro2,int id)
+	{
+		
+	
+		SetVirtualPro m;
+	    mSetVirtualPro=new Stack<SetVirtualPro>();
+	    for(int i=0;i<mSetVirtualPro2.size();i++)
+	    {
+	    	m=new SetVirtualPro(mSetVirtualPro2.get(i).productionNum,mSetVirtualPro2.get(i).pointer,mSetVirtualPro2.get(i).firstSet,mSetVirtualPro2.get(i).firstSetNum);
+	    	mSetVirtualPro.add(m);
+	    }
+	    setvirtualProNum=mSetVirtualPro2.size();
+	    this.id=id;
+	    shutornot=false;
 	}
 	public void addsetvirtualPro(SetVirtualPro svP)
 	{
