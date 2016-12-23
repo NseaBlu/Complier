@@ -13,7 +13,7 @@ public class AnayliseTable {
 			for(int j=0;j<100;j++)
 			{
 				
-				actiontable[i][j]=new actiongoto();
+				actiontable[i][j]=new actiongoto(0,0);
 				
 			}
 		}
@@ -22,7 +22,7 @@ public class AnayliseTable {
 			for(int j=0;j<100;j++)
 			{
 				
-				gototable[i][j]=new actiongoto();
+				gototable[i][j]=new actiongoto(0,0);
 				
 			}
 		}

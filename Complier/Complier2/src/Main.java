@@ -15,26 +15,53 @@ public class Main {
 	public static Stack<ItemSet> allItemSetnotPop;
 	public static SetVirtualPro addgrammer;
 	public static int allItemSetNum;
-	private static Stack testItemSet;
+	private static ItemSet testItemSet;
 	private static Stack testSetVirtualPro;
 	public static AnayliseTable mAnayliseTable;
 	public static boolean endornot;
 	public static int originstatus;
 	public static int nowstatus;
 	public static actiongoto ggttoo;
+	public static actiongoto aacctt;
+	private static boolean setequalornot;
+	
+	public static TokenAnaylise ta;
+	public static EndSign[] inputSign;//输入存储
+	public static int inputSignNum;
+	public static Stack<status> inputstatus;//状态压栈
+	public static Stack<EndSign> inputRecieve;//接受输入
 	
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		         vainNum=new int[20];
-			     mp = new GrammerAnaylise();
-			     allItemSet=new Stack<ItemSet>();
-			     allItemSetnotPop=new Stack<ItemSet>();
-			     mAnayliseTable=new AnayliseTable();
-			     endornot=false;
-			    
-			 	    init();//初始化
+		          vainNum=new int[20];
+			      mp = new GrammerAnaylise();
+			      ta=new TokenAnaylise();
+			      inputSign=new EndSign[50];
+			      allItemSet=new Stack<ItemSet>();
+			      allItemSetnotPop=new Stack<ItemSet>();
+			      mAnayliseTable=new AnayliseTable();
+			      inputRecieve=new Stack<EndSign>();
+			      inputstatus=new Stack<status>();
+			      
+			      
+			      endornot=false;
+			      try {
+					inputSignNum=TokenAnaylise.getChar(inputSign);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			      for(int inputI=0;inputI<inputSignNum;inputI++)
+			      {
+			    	  System.out.println(inputSign[inputI].getEndSign()+" "+inputSign[inputI].getSignNum());
+			      }
+			      
+			      
+			      
+			      
+			 	/*  init();//初始化
 			 	    
 				  printfEndSign();//输出终结符
 				    printfNotEndCode();//输出非终结符
@@ -70,8 +97,9 @@ public class Main {
 				   firstItemSet=closure(firstItemSet);
 				   for(int i=0;i<firstItemSet.setvirtualProNum;i++)
 			 	   {
-			 		   System.out.println(firstItemSet.mSetVirtualPro.get(i).productionNum);
+			 		   System.out.print("0:"+firstItemSet.mSetVirtualPro.get(i).productionNum);
 			 	   }
+				   System.out.println(" ");	   
 				   // firstItemSet=closure(firstItemSet);
 				    
 				   allItemSet.push(firstItemSet);
@@ -85,21 +113,28 @@ public class Main {
 				 
 				   while(!allItemSet.isEmpty())
 				   {
-					   if(time==5)break;
+					 // if(time==10)break;
 					   ItemSet keepmiddleItemSet=new ItemSet();
 					   keepmiddleItemSet=allItemSet.pop();
 					   
 					   originstatus=keepmiddleItemSet.id;
+					   
+					   //输入终结符
 					   for(int d1=0;d1< notEndCodeLength-1;d1++)
 					   {
-
+						   System.out.println("集合编号"+keepmiddleItemSet.id);
 						   for(int i=0;i< keepmiddleItemSet.setvirtualProNum;i++)
 					 	   {
 					 		   System.out.println("keep"+ keepmiddleItemSet.mSetVirtualPro.get(i).productionNum+" "+keepmiddleItemSet.mSetVirtualPro.get(i).pointer);
+					 		   for(int ppp=0;ppp<keepmiddleItemSet.mSetVirtualPro.get(i).firstSetNum;ppp++)
+					 		   {
+					 			   System.out.print(keepmiddleItemSet.mSetVirtualPro.get(i).firstSet[ppp]);
+					 		   }
+					 		   System.out.println(" ");
 					 	   }
 						   middleItemSet=new ItemSet(keepmiddleItemSet.mSetVirtualPro,keepmiddleItemSet.id);
-						   System.out.println(":::"+NotEndCodeArray[d1].getSignString());
-						   middleItemSet22=Goto(middleItemSet,d1);
+						   System.out.println("输入非终结符："+NotEndCodeArray[d1].getSignString());
+						   middleItemSet22=Goto(middleItemSet,d1,1);
 						   if(middleItemSet22.setvirtualProNum==0)
 						   {
 							   
@@ -110,34 +145,238 @@ public class Main {
 							   if(middleItemSet22.shutornot)break;
 							   else
 							   {
-							
-							   nowstatus=middleItemSet22.id;
-							   allItemSetnotPop.push(middleItemSet22);
-							   ggttoo=new actiongoto(3,nowstatus);
-							   mAnayliseTable.gototable[originstatus][d1]=ggttoo;
-							   allItemSet.push(middleItemSet22);
-							   allItemSetNum+=1;
+								  
+								   ItemSet testItemset;
+								   for(int tt=0;tt< allItemSetnotPop.size();tt++)
+								   {
+									   System.out.println("总集合的元素个数："+allItemSetnotPop.size());
+									   setequalornot=true;
+									   testItemSet= allItemSetnotPop.get(tt);
+									   System.out.println("对比的集合编号"+testItemSet.id);
+									   if(testItemSet.setvirtualProNum!=middleItemSet22.setvirtualProNum)
+									   {
+										   System.out.println("集合元素个数不相等："+testItemSet.setvirtualProNum+middleItemSet22.setvirtualProNum);
+										   setequalornot=false;
+									   }
+									   else
+									   {
+										   System.out.println("集合元素个数相等："+testItemSet.setvirtualProNum+middleItemSet22.setvirtualProNum);
+										   for(int tt2=0;tt2<middleItemSet22.setvirtualProNum;tt2++)
+										   {
+											   
+											   if(testItemSet.mSetVirtualPro.get(tt2).productionNum==middleItemSet22.mSetVirtualPro.get(tt2).productionNum)
+											   {
+												   System.out.println("集合里的产生式相等：");
+												   if(testItemSet.mSetVirtualPro.get(tt2).firstSetNum==middleItemSet22.mSetVirtualPro.get(tt2).firstSetNum)
+												   {
+													  System.out.println("first集个数相等：");
+													   for(int tt3=0;tt3<testItemSet.mSetVirtualPro.get(tt2).firstSetNum;tt3++)
+													   {
+														   if(testItemSet.mSetVirtualPro.get(tt2).firstSet[tt3]==middleItemSet22.mSetVirtualPro.get(tt2).firstSet[tt3]);
+														   else
+															   {
+															     System.out.println("first集不一样");
+															     setequalornot=false;
+															     break;
+															      
+															   }
+													   }
+												   }
+												   else 
+													   {
+													   System.out.println("first集个数不相等：");
+													      setequalornot=false;
+													      break;
+													   }
+											   }
+											   else 
+												   {
+												   System.out.println("集合里的产生式不相等：");
+												      setequalornot=false;
+												      break;
+												   }
+											
+										   }
+										   if(setequalornot)break;
+									   }
+									   
+								   }
+								   
+							        if(!setequalornot)
+							      { nowstatus=middleItemSet22.id;
+							            allItemSetnotPop.push(middleItemSet22);
+							             ggttoo=new actiongoto(3,nowstatus);
+							               mAnayliseTable.gototable[originstatus][d1]=ggttoo;
+							  // System.out.print("shshi "+mAnayliseTable.gototable[originstatus][d1].actiontype+"."+mAnayliseTable.gototable[originstatus][d1].tostatus+" ");
+							         //  System.out.println("ggttoo");
+							                 allItemSet.push(middleItemSet22);
+							                  allItemSetNum+=1;
+							      }
+							        else
+							        {
+							          System.out.println("有相同");
+							           nowstatus=testItemSet.id;
+							           ggttoo=new actiongoto(1,nowstatus);
+						               mAnayliseTable.gototable[originstatus][d1]=ggttoo;
+							        }
+							  
+							   
 							   }
 						   }
 						  
-						   System.out.println(":::"+allItemSetNum);
-						
+						   
+						   System.out.println("项集总个数"+allItemSetNum);
+						   System.out.println("项集总个数"+" middleItemSet22编号："+ middleItemSet22.id);
 						   for(int i=0;i<middleItemSet22.setvirtualProNum;i++)
 					 	   {
-					 		   System.out.println("::"+middleItemSet22.mSetVirtualPro.get(i).productionNum);
+					 		   System.out.println("拓展产生式编号"+middleItemSet22.mSetVirtualPro.get(i).productionNum);
 					 	   }
 					   }
-					   System.out.println("状态   "+" c  "+" d  "+" $ "+"<S1>"+" <S>"+" <C>");
-					   for(int i=0;i<10;i++)
+					   
+					  
+					 
+					   
+					   //输入fei终结符
+					   for(int d2=0;d2< endSignLength-1;d2++)
+					   {
+						   
+						   for(int i=0;i< keepmiddleItemSet.setvirtualProNum;i++)
+					 	   {
+					 		   System.out.println("keep"+ keepmiddleItemSet.mSetVirtualPro.get(i).productionNum+" "+keepmiddleItemSet.mSetVirtualPro.get(i).pointer);
+					 		  for(int ppp=0;ppp<keepmiddleItemSet.mSetVirtualPro.get(i).firstSetNum;ppp++)
+					 		   {
+					 			   System.out.print(keepmiddleItemSet.mSetVirtualPro.get(i).firstSet[ppp]);
+					 		   }
+					 		   System.out.println(" ");
+					 	   
+					 	   
+					 	   }
+						   middleItemSet=new ItemSet(keepmiddleItemSet.mSetVirtualPro,keepmiddleItemSet.id);
+						   System.out.println("输入非终结符:"+EndSignArray[d2].getSignString());
+						   middleItemSet22=Goto(middleItemSet,d2,0);
+						   if(middleItemSet22.setvirtualProNum==0)
+						   {
+							   
+						   }
+						   else
+						   {
+							   middleItemSet22.id=allItemSetNum;
+							   if(middleItemSet22.shutornot)break;
+							   else
+							   {
+								   ItemSet testItemset;
+								  
+								   for(int tt=0;tt<allItemSetnotPop.size();tt++)
+								   {
+									   System.out.println("总集合的元素个数："+allItemSetnotPop.size());
+									   setequalornot=true;
+									   testItemSet=allItemSetnotPop.get(tt);
+									   System.out.println("对比的集合编号"+testItemSet.id);
+									   if(testItemSet.setvirtualProNum!=middleItemSet22.setvirtualProNum)
+									   {
+										   
+										  System.out.println("集合元素个数不相等："+testItemSet.setvirtualProNum+middleItemSet22.setvirtualProNum);
+										   setequalornot=false;
+									   }
+									   else
+									   {
+										   
+										   System.out.println("集合元素个数相等："+testItemSet.setvirtualProNum+middleItemSet22.setvirtualProNum);
+										   for(int tt2=0;tt2<middleItemSet22.setvirtualProNum;tt2++)
+										   {
+											   if(testItemSet.mSetVirtualPro.get(tt2).productionNum==middleItemSet22.mSetVirtualPro.get(tt2).productionNum)
+											   {
+												   
+												   System.out.println("集合里的产生式相等：");
+												   if(testItemSet.mSetVirtualPro.get(tt2).firstSetNum==middleItemSet22.mSetVirtualPro.get(tt2).firstSetNum)
+												   {
+													   System.out.println("first集个数相等");
+													   for(int tt3=0;tt3<testItemSet.mSetVirtualPro.get(tt2).firstSetNum;tt3++)
+													   {
+														   if(testItemSet.mSetVirtualPro.get(tt2).firstSet[tt3]==middleItemSet22.mSetVirtualPro.get(tt2).firstSet[tt3]);
+														   else
+															   {
+															   System.out.println("first集不一样");
+															     setequalornot=false;
+															     break;
+															      
+															   }
+													   }
+												   }
+												   else 
+													   {
+													   
+													     System.out.println("first集个数不相等：");
+													      setequalornot=false;
+													      break;
+													   }
+											   }
+											   else 
+												   {
+												     System.out.println("集合里的产生式不相等：");
+												      setequalornot=false;
+												      break;
+												   }
+											 if(setequalornot)
+												 {
+												    
+												 System.out.println("有相同");
+												      break;
+												 }
+										   }
+										   
+										   if(setequalornot)
+											 {
+											    
+											 System.out.println("有相同");
+											      break;
+											 }
+									   }
+								   }
+								   if(!setequalornot)
+								   {   nowstatus=middleItemSet22.id;
+							   allItemSetnotPop.push(middleItemSet22);
+							   aacctt=new actiongoto(1,nowstatus);
+							   mAnayliseTable.actiontable[originstatus][d2]=aacctt;
+							   allItemSet.push(middleItemSet22);
+							   allItemSetNum+=1;
+								   }
+								   else
+								   {
+									   nowstatus=testItemSet.id;
+									   aacctt=new actiongoto(1,nowstatus);
+									   mAnayliseTable.actiontable[originstatus][d2]=aacctt;
+								   }
+							   }
+						   }
+						  
+						   System.out.println("项集总个数"+allItemSetNum);
+						   System.out.println("项集总个数"+" middleItemSet22编号："+ middleItemSet22.id);
+						   for(int i=0;i<middleItemSet22.setvirtualProNum;i++)
+					 	   {
+					 		   System.out.println("拓展产生式编号"+middleItemSet22.mSetVirtualPro.get(i).productionNum);
+					 	   }
+					   }
+					   
+					   System.out.print( "状态"+"  |");
+					   int oo;
+					   for( oo=0;oo<endSignLength;oo++)
+						   System.out.print( EndSignArray[oo].getEndSign()+"   |");
+						   for( oo=endSignLength;oo<(endSignLength+notEndCodeLength-1);oo++)
+						  {
+						      System.out.print( NotEndCodeArray[oo-endSignLength].getNotEndCode()+" |");
+						   }
+						   System.out.println(" ");
+					   for(int i=0;i<15;i++)
 					   {
 						   
 						   int j;
-						   System.out.print(i+" ");
+						   System.out.print(i+"  |");
 						   for(j=0;j<endSignLength;j++)
-						   System.out.print(mAnayliseTable.actiontable[i][j].actiontype+"."+mAnayliseTable.actiontable[i][j].tostatus+" ");
+						   System.out.print(mAnayliseTable.actiontable[i][j].actiontype+"."+mAnayliseTable.actiontable[i][j].tostatus+" |");
 						   for(j=endSignLength;j<(endSignLength+notEndCodeLength-1);j++)
-						   {
-							   System.out.print(mAnayliseTable.gototable[i][j-endSignLength].actiontype+"."+mAnayliseTable.gototable[i][j-endSignLength].tostatus+" ");
+						  {
+						      System.out.print(mAnayliseTable.gototable[i][j-endSignLength].actiontype+"."+mAnayliseTable.gototable[i][j-endSignLength].tostatus+" |");
 						   }
 						   System.out.println(" ");
 					   }
@@ -145,10 +384,41 @@ public class Main {
 				   }
 			 	 
 			 	    
+			 )*/
+			      
+			      
+			     
+			      
 			 
+			     
+			      
+			      
+			      
+			      
 	
 	}
 	
+	//语法分析
+    //栈 符号 输入  动作
+	//1:移进  status:状态  2：规约  产生式头的编号    3：goto  状态
+	
+	//public static EndSign[] inputSign;//输入存储
+	//public static int inputSignNum;
+	//public static Stack<status> inputstatus;//状态压栈
+	//public static Stack<EndSign> inputRecieve;//接受输入
+	public  static void Anaylise()
+	{
+		
+		
+		//初始化状态栈
+		status statush;
+		statush=new status(0);
+		inputstatus.push(statush);
+		
+		
+		
+		
+	}
 	
 	//闭包函数
 	public static ItemSet closure(ItemSet I)
@@ -183,7 +453,7 @@ public class Main {
 		int pp;
 		while(!testSetVirtualPro.isEmpty())
 		{
-		     System.out.println("1");
+		   //  System.out.println("1");
 			
 			help=(SetVirtualPro) testSetVirtualPro.pop();
 			mpointer=help.pointer;
@@ -256,14 +526,16 @@ public class Main {
 							break;
 						}
 					}
-					if(n==I.mSetVirtualPro.size())
-					{
+				//	if(n==I.mSetVirtualPro.size())
+				//	{
 						
-						   System.out.println("2");
+						  // System.out.println("2");
 							
 						testSetVirtualPro.push(help3);
 						I.addsetvirtualPro(help3);
-					}
+				
+						
+				//	}
 					
 				}
 					
@@ -287,7 +559,7 @@ public class Main {
 		SetVirtualPro cc=new SetVirtualPro();
 		  for(int i1=0;i1<I.setvirtualProNum;i1++)
 	 	   {
-	 		   System.out.println(I.mSetVirtualPro.get(i1).productionNum);
+	 		   System.out.println("closure:"+I.mSetVirtualPro.get(i1).productionNum);
 	 		cc=  I.mSetVirtualPro.get(i1);
 	 		
 	 		  for(int j1=0;j1<cc.firstSetNum;j1++)
@@ -303,7 +575,7 @@ public class Main {
 		return I;
 		
 	}
-	public static ItemSet Goto(ItemSet I,int signNum)
+	public static ItemSet Goto(ItemSet I,int signNum,int signtype)
 	{
 		
 		int id=I.id;
@@ -318,14 +590,14 @@ public class Main {
         {
         	
         	
-        	System.out.println("3");
+        	//System.out.println("3");
         	stacksvP=I.mSetVirtualPro.get(i);
         	pp=stacksvP.pointer;
         	productionNum=stacksvP.productionNum;
-        	 System.out.println("productionNum"+productionNum);
+        	 System.out.println("goto:productionNum"+productionNum);
         	if(pp!=allProduction[productionNum].productionLength)
         	{
-        		if(allProduction[productionNum].productionSign[pp].getSignNum()==signNum&&allProduction[productionNum].productionSign[pp].type==1)
+        		if(allProduction[productionNum].productionSign[pp].getSignNum()==signNum&&allProduction[productionNum].productionSign[pp].type==signtype)
         	
         	  {
         			 
@@ -340,7 +612,7 @@ public class Main {
         	{
         		actiongoto ag;
         		System.out.println("规约"+id+signNum);
-    			if(productionNum==realProductionLength)
+    			if(productionNum==(realProductionLength-1))
     			    ag=new actiongoto(4,productionNum);
     			else ag=new actiongoto(2,productionNum);
     			int guiyueafter;

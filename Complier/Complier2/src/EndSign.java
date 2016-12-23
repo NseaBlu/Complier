@@ -9,7 +9,12 @@ public class EndSign extends Sign {
 		this.EndSign=s;
 		this.setType(0);
 	}
-	
+	public EndSign(String s,int EndSignNum)
+	{
+		this.EndSign=s;
+		this.EndSignNum=EndSignNum;
+		this.setType(0);
+	}
 	public String getEndSign() {
 		return EndSign;
 	

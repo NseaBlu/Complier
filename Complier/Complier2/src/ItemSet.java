@@ -41,6 +41,9 @@ public class ItemSet {
 	}
 	public void addsetvirtualPro(SetVirtualPro svP)
 	{
+		
+		
+		
 		if(setvirtualProNum==0)
 		{
 			mSetVirtualPro.push(svP);
@@ -96,6 +99,43 @@ public class ItemSet {
 					for(int d2=0;d2<svP.firstSetNum;d2++)
 					{
 						this.mSetVirtualPro.get(i).addfirstset(svP.firstSet[d2]);
+					}
+				}
+				else
+				{
+					if(this.mSetVirtualPro.get(i).pointer>svP.pointer)
+					{
+						mm = new Stack<SetVirtualPro>();
+					    while(this.mSetVirtualPro.size()>i)
+					    {
+					    	mm.push(this.mSetVirtualPro.pop());
+					    	
+					    }
+					    
+					    this.mSetVirtualPro.push(svP);
+					    while(!mm.isEmpty())
+					    {
+					    	this.mSetVirtualPro.push(mm.pop());
+					    	
+					    }
+					    this.setvirtualProNum+=1;
+					}
+					else
+					{
+						mm = new Stack<SetVirtualPro>();
+					    while(this.mSetVirtualPro.size()>(i+1))
+					    {
+					    	mm.push(this.mSetVirtualPro.pop());
+					    	
+					    }
+					    
+					    this.mSetVirtualPro.push(svP);
+					    while(!mm.isEmpty())
+					    {
+					    	this.mSetVirtualPro.push(mm.pop());
+					    	
+					    }
+					    this.setvirtualProNum+=1;
 					}
 				}
 			}
