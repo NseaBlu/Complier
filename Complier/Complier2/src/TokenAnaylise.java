@@ -45,6 +45,8 @@ public class TokenAnaylise {
 							break;
 						}
 					}
+					input[stringlength]=new EndSign("$",2);
+					stringlength+=1;
 					
 				}
 				bf.close();

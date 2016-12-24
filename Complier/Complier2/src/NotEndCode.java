@@ -10,7 +10,10 @@ public class NotEndCode extends Sign {
     public int []canGenProductionArrary;
     
     
-    
+    public NotEndCode()
+    {
+    	
+    }
 	public NotEndCode(String s)
 	{
 	

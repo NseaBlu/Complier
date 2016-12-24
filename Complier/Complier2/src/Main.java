@@ -29,7 +29,9 @@ public class Main {
 	public static EndSign[] inputSign;//输入存储
 	public static int inputSignNum;
 	public static Stack<status> inputstatus;//状态压栈
-	public static Stack<EndSign> inputRecieve;//接受输入
+	public static Stack<Sign> inputRecieve;//接受输入
+	private static actiongoto nowaction;
+	private static Stack<Sign> popreceiveSign;
 	
 	
 	public static void main(String[] args) {
@@ -42,7 +44,7 @@ public class Main {
 			      allItemSet=new Stack<ItemSet>();
 			      allItemSetnotPop=new Stack<ItemSet>();
 			      mAnayliseTable=new AnayliseTable();
-			      inputRecieve=new Stack<EndSign>();
+			      inputRecieve=new Stack<Sign>();
 			      inputstatus=new Stack<status>();
 			      
 			      
@@ -59,9 +61,8 @@ public class Main {
 			      }
 			      
 			      
-			      
-			      
-			 	/*  init();//初始化
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////			      
+			 	  init();//初始化
 			 	    
 				  printfEndSign();//输出终结符
 				    printfNotEndCode();//输出非终结符
@@ -384,8 +385,9 @@ public class Main {
 				   }
 			 	 
 			 	    
-			 )*/
-			      
+			 
+////////////////////////////////////////////////////////////////////////////////
+			    Anaylise();  
 			      
 			     
 			      
@@ -401,22 +403,485 @@ public class Main {
 	//语法分析
     //栈 符号 输入  动作
 	//1:移进  status:状态  2：规约  产生式头的编号    3：goto  状态
-	
+	//public static AnayliseTable mAnayliseTable;
 	//public static EndSign[] inputSign;//输入存储
 	//public static int inputSignNum;
 	//public static Stack<status> inputstatus;//状态压栈
 	//public static Stack<EndSign> inputRecieve;//接受输入
+	//actiongoto nowaction;//查表所得结果
+	//private static  EndSign [] EndSignArray;
+	//private static  NotEndCode []NotEndCodeArray;
+	//public static Production []allProduction;
+	//情况1：成功  情况2：失败   情况2.1 还有输入状态为空   2.2到达错误状态  2.3到达末尾仍未报告成功
 	public  static void Anaylise()
 	{
 		
-		
+		int line=1;
+		int hang;
+		int lie;
 		//初始化状态栈
-		status statush;
+		status statush;//动态状态
+		EndSign nowEndSign;//当前指针所指的输入符
 		statush=new status(0);
 		inputstatus.push(statush);
+		int pointer;//输入移动指针
+		status stacktop;//状态栈栈顶
+		int actiontype;
+		int nexstatustype;
+		int guiyueProductionNum=0;
+		boolean errorPost=false;
+		Production useProduction;
+		int afterGYstatus;
+		int referstatus;
+		int referlie;
+		NotEndCode gYHead;
+		boolean movePointer;
+		boolean successPost=false;
+		actiongoto originaction;
+		Sign receiveStackSign;
+		int errortype=1;  //errortype=1:  2.2到达错误状态  ; errortype=2:  还有输入状态为空  
+		popreceiveSign = new Stack<Sign>();//存储弹出的符号
+		inputRecieve=new Stack<Sign>();
 		
+		System.out.println("状态栈"+" |"+"栈中符号"+" |"+"输入"+"  |"+"动作" );
 		
+		//输出状态
+		for(int statusI=0;statusI<inputstatus.size();statusI++)
+	     {
+	    	 System.out.print(inputstatus.get(statusI).status);
+	     }
+	     
+	     System.out.print("    ");
+	     //输出接受的符号
+	     
+		for(int signI=0;signI< inputRecieve.size();signI++)
+	     {
+	    	 System.out.print(inputRecieve.get(signI).getSignString());
+	     }
+	     
+	     System.out.print("      ");
+	     //输出输入
+	     
+	   
+	        	  for(int inputI=0;inputI<inputSignNum;inputI++)
+		 		     {
+		 		    	 System.out.print(inputSign[inputI].getEndSign());
+		 		     }
+	        	
+	    
+	     
+	     System.out.print("    ");
+	     //输出动作
+	    
+	        	  System.out.print("开始");   	
+	        
+	     
+	     System.out.println("  ");  
+	
+		 stacktop=inputstatus.peek();//查看状态栈顶元素
+	     hang=stacktop.status;//分析表行
+		for(pointer=0;pointer<inputSignNum;pointer++)
+		{
+			 
+		     movePointer=false;
+		    
+		     nowEndSign=inputSign[pointer];//获取当前输入
+		     lie=nowEndSign.EndSignNum;//分析表列
+		     nowaction= mAnayliseTable.actiontable[hang][lie];
+		     actiontype=nowaction.actiontype;
+		     originaction=nowaction;
+		     
+		   if(pointer!=(inputSignNum-1))
+		   {
+			   while(!movePointer)
+		   
+		     {
+		     	
+		    	 originaction=nowaction;
+		     switch(nowaction.actiontype)
+		     {
+		     case 0:
+		    	 errorPost=true;
+		    	 errortype=1;
+		    	 break;
+		     case 1://移进
+		    	 inputRecieve.push(nowEndSign);
+		    	 hang=nowaction.tostatus;
+		    	 statush=new status(hang);//状态压栈
+		    	 inputstatus.push(statush);	 
+		    	// System.out.println("移进+1");
+		    	 movePointer=true;
+		    	break;
+		     case 2://规约
+		    	 guiyueProductionNum=nowaction.tostatus;
+		    	 useProduction=new Production();
+		    	 useProduction=allProduction[guiyueProductionNum];
+		    	 gYHead=new NotEndCode(useProduction.getHead().getNotEndCode());
+		    	 gYHead.NotEndCodeNum=useProduction.getHead().getSignNum();
+		    
+		    	 for(int ll=0;ll<useProduction.productionLength;ll++)
+		    	 {
+		    		// popreceiveSign.push(inputRecieve.pop());
+		    		 inputRecieve.pop();
+		    	 }
+		    	 
+		    	// System.out.println("出来啦");
+		    	 inputstatus.pop();
+		    	 inputRecieve.push(gYHead);
+		    	 if(!inputstatus.isEmpty())
+		    	 {
+		    		// System.out.println("状态还没空");
+		    		 referstatus=inputstatus.peek().status;
+		    	//	 System.out.println(referstatus);
+		    		 referlie=nowEndSign.EndSignNum;
+		    	//	 System.out.println("nowEndSign.EndSignNum"+referstatus+referlie);
+		    		 nowaction=mAnayliseTable.actiontable[referstatus][referlie];
+		    		// System.out.println("nowstatus"+nowaction.actiontype+nowaction.tostatus);
+		    	 }
+		    	 else
+		    	 {
+		    		 errortype=2;
+		    		 errorPost=true;
+		    	 }
+		    	 
+		    	 
+		    	 break;
+		     case 3://goto
+		    	
+		    	 
+		    	 hang=nowaction.tostatus;
+		    	 nowaction=mAnayliseTable.actiontable[hang][lie];
+		    	 
+		    	 break;
+		     case 4:
+		    	 successPost=true;
+		    	 
+		    	 break;
+		     
+		     }
+		     if(errorPost)
+		     {
+		    	// System.out.println("出错啦~！"+"出错输入位置："+pointer);
+		    	 break;
+		     }
 		
+		     for(int statusI=0;statusI<inputstatus.size();statusI++)
+		     {
+		    	 System.out.print(inputstatus.get(statusI).status);
+		     }
+		     
+		     System.out.print("    ");
+		     //输出接受的符号
+		     
+		     
+		     for(int signI=0;signI< inputRecieve.size();signI++)
+		     {
+		    	 System.out.print(inputRecieve.get(signI).getSignString());
+		     }
+		     
+		     System.out.print("    ");
+		     //输出输入
+		     
+		     switch(originaction.actiontype)
+		     {
+		         case 1:
+		        	  
+		        	  for(int inputI=pointer+1;inputI<inputSignNum;inputI++)
+		 		     {
+		 		    	 System.out.print(inputSign[inputI].getEndSign());
+		 		     }
+		    	       break;
+		    	       
+		        default:
+		        	  for(int inputI=pointer;inputI<inputSignNum;inputI++)
+			 		     {
+			 		    	 System.out.print(inputSign[inputI].getEndSign());
+			 		     }
+		        	  break;
+		   
+		     }
+		    
+		     
+		     System.out.print("    ");
+		     //输出动作
+		     switch(originaction.actiontype)
+		     {
+		         case 1:
+		        	  
+		        	  System.out.print("移进"+inputSign[pointer].getEndSign());
+		    	       break;
+		    	       
+		          case 2:
+		        	  System.out.print("规约，规约产生式编号："+ guiyueProductionNum);   	  
+		        	  
+		        	  break;
+		        
+		          case 3:
+		        	  System.out.print("Goto，goto状态："+ hang);   	
+		        	  break;
+		   
+		        }
+		     
+		     System.out.println("  ");  
+		     if(successPost)
+		     {
+		    	// System.out.println("Success!");
+		    	 break;
+		     }
+		   
+		   
+		     }
+		
+		   }
+		     
+		   
+		   else
+		   {
+			   //  movePointer=false;
+			    
+			   
+			   
+			     int receivevePointer=inputRecieve.size()-1;
+			     boolean gotornot=false;
+			   
+			   while(!inputRecieve.isEmpty())
+				   
+			   {
+			    
+				   if(inputRecieve.size()==1&&inputRecieve.peek().type==1&& inputRecieve.peek().getSignNum()==0)
+				   {
+				   successPost=true;
+				   break;
+				   }
+				   if(!gotornot)
+				   {
+					   receivevePointer=inputRecieve.size()-1;
+				   }
+				   else
+				   {
+					   receivevePointer-=1;
+					   if(receivevePointer<0)
+					   {
+						   
+						  // System.out.println("haofanaaaa");
+						 // errorPost=true;
+						  // break;
+					   }
+				   }
+				   
+				   
+				   if( receivevePointer>=0)
+				   {
+					   
+					   receiveStackSign=inputRecieve.get(receivevePointer);
+				    //  System.out.println( receiveStackSign.getSignString()+" type"+receiveStackSign.type);
+				  
+				      if(receiveStackSign.type==0)
+				     {
+					   lie= receiveStackSign.getSignNum();
+					   nowaction= mAnayliseTable.actiontable[hang][lie];
+					  // System.out.println( nowaction.actiontype+" "+ nowaction.tostatus);
+				     }
+				     else
+				     {
+					   
+					//   System.out.println("feizhongjiefu");
+					   lie= receiveStackSign.getSignNum();
+					   nowaction= mAnayliseTable.gototable[hang][lie];
+					 //  System.out.println( nowaction.actiontype+" "+ nowaction.tostatus);
+				     }
+				   
+				   
+				   }
+				   else
+				   {
+					   nowaction=mAnayliseTable.actiontable[hang][2];
+				   }
+			       originaction=nowaction;
+			     switch(nowaction.actiontype)
+			     {
+			     case 0:
+			    	 errorPost=true;
+			    	 errortype=1;
+			    	 break;
+			     case 1://移进
+			    	 errorPost=true;
+			    	 errortype=1;
+			    	break;
+			     case 2://规约
+			    	 guiyueProductionNum=nowaction.tostatus;
+			    	 useProduction=new Production();
+			    	 useProduction=allProduction[guiyueProductionNum];
+			    	 gYHead=new NotEndCode(useProduction.getHead().getNotEndCode());
+			    	// System.out.println( gYHead.getNotEndCode());
+			    	// System.out.println("jjj"+useProduction.getHead().getSignNum() );
+			    	 gYHead.NotEndCodeNum=useProduction.getHead().getSignNum();
+			    	// gYHead=useProduction.getHead();
+			    	 for(int ll=0;ll<useProduction.productionLength;ll++)
+			    	 {
+			    		// popreceiveSign.push(inputRecieve.pop());
+			    	//	 System.out.println(ll+"  LL   "+inputRecieve.size()+" cc"+useProduction.productionLength);
+			    		 inputRecieve.pop();
+			    	 }
+			    	 
+			    	// System.out.println("出来啦");
+			    	 inputstatus.pop();
+			    	 inputRecieve.push(gYHead);
+			    	// System.out.println("压进去的:"+inputRecieve.peek().getSignString()+" "+inputRecieve.size());
+			    	  if(inputRecieve.size()==1&&inputRecieve.peek().type==1&& inputRecieve.peek().getSignNum()==0)
+					   {
+					   successPost=true;
+					   break;
+					   }
+			    	  else
+			    		  {
+			    		  
+			    		     if(!inputstatus.isEmpty())
+			    		  
+			    	 {
+			    		// System.out.println("状态还没空");
+			    		 hang=inputstatus.peek().status;
+			    		// System.out.println("hang"+hang);
+			  
+			    	 }
+			    	 else
+			    	 {
+			    		 errortype=2;
+			    		 errorPost=true;
+			    	 }
+			    	 gotornot=false;
+			    		  }
+			    	 
+			    	 break;
+			     case 3://goto
+			     
+			    	 gotornot=true;
+			    	hang=nowaction.tostatus;
+			    	 
+			    	 break;
+			     case 4:
+			    	 successPost=true;
+			    	 
+			    	 break;
+			     
+			     }
+			   
+			 
+			     if(errorPost)
+			     {
+			    	 
+			    	 break;
+			     }
+			  
+			   
+		//输出
+			     for(int statusI=0;statusI<inputstatus.size();statusI++)
+			     {
+			    	 System.out.print(inputstatus.get(statusI).status);
+			     }
+			     
+			     System.out.print("    ");
+			     //输出接受的符号
+			     
+			     
+			     for(int signI=0;signI< inputRecieve.size();signI++)
+			     {
+			    	 System.out.print(inputRecieve.get(signI).getSignString());
+			     }
+			     
+			     System.out.print("    ");
+			     //输出输入
+			     
+			     switch(originaction.actiontype)
+			     {
+			         case 1:
+			        	  
+			        	  for(int inputI=pointer+1;inputI<inputSignNum;inputI++)
+			 		     {
+			 		    	 System.out.print(inputSign[inputI].getEndSign());
+			 		     }
+			    	       break;
+			    	       
+			        default:
+			        	  for(int inputI=pointer;inputI<inputSignNum;inputI++)
+				 		     {
+				 		    	 System.out.print(inputSign[inputI].getEndSign());
+				 		     }
+			        	  break;
+			   
+			     }
+			    
+			     
+			     System.out.print("    ");
+			     //输出动作
+			     switch(originaction.actiontype)
+			     {
+			         case 1:
+			        	  
+			        	  System.out.print("移进"+inputSign[pointer].getEndSign());
+			    	       break;
+			    	       
+			          case 2:
+			        	  System.out.print("规约，规约产生式编号："+ guiyueProductionNum);   	  
+			        	  
+			        	  break;
+			        
+			          case 3:
+			        	  System.out.print("Goto，goto状态："+ hang);   	
+			        	  break;
+			   
+			        }
+			     
+			     System.out.println("  ");  
+			   
+			     
+			     
+			     if(successPost)
+			     {
+			    
+			    	 break;
+			     }
+			   
+			   
+	 }
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+		   }
+		     if(errorPost)
+		     {
+		    	 
+		    	 if(errortype==1)
+		    	 System.out.println("出错啦~！"+"到达错误状态啦~~~出错输入位置："+pointer);
+		    	 else if(errortype==2)
+		    	 {
+		    		 System.out.println("出错啦~！"+"状态栈空啦~~~出错输入位置："+pointer);
+		    	 }
+		    	 break;
+		     }
+		     
+		     if(successPost)
+		     {
+		    	 System.out.println("Success!");
+		    	 break;
+		     }
+		     
+		     //情况输出
+		     //状态栈 符号 输入  动作
+		     
+		  //  System.out.print("("+line+")"+" "+0+"    ");
+		      //输出状态栈
+		   
+		}
+		if(pointer==inputSignNum)
+		{
+			 System.out.println("出错啦~！"+"还没到达Success状态");
+		}
 		
 	}
 	
